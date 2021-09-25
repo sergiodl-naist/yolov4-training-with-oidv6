@@ -25,6 +25,25 @@ for DIR in DIRS:
     subprocess.run(["mv", DIR + "/labels/*", DIR + "/"])
     print_msg(f"Labels from directory {DIR} moved to parent folder")
 
+######## Fill up empty validation and test directories ########
+
+# Get classes actually downloaded in multidata
+
+actual_classes = {
+    'train': [],
+    'validation': [],
+    'test': []}
+
+for DIR in DIRS:
+    chdir(DIR)
+    file_classes = [
+        "_".join(elem.split("_")[:-1])
+        for elem in os.listdir()
+        if os.path.isfile(elem)]
+    chdir("..")
+    # Eliminate duplicates
+    actual_classes[DIR] = list(dict.fromkeys(file_classes))
+
 ######## Change Labels inside annotation files to Label Indexes  ########
 
 classes = get_classes(path.join("..", "..", "classes.txt"))
