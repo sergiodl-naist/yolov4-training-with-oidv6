@@ -1,4 +1,3 @@
-Container
 Toy
 Beer
 Ball
@@ -30,7 +29,6 @@ Mechanical fan
 Nightstand
 Ceiling fan
 Kettle
-Kitchenware
 Food processor
 Bookcase
 Refrigerator

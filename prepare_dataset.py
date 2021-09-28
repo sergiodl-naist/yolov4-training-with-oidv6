@@ -1,8 +1,12 @@
-from os import chdir, path
+from os import chdir, path, listdir, getcwd
 import subprocess
+import cv2
 
-DIRS = ("train", "validation", "test")
+DIRS = ["train", "validation", "test"]
 DEBUG = True
+
+SKIP_TRANSLATE_LABELS = False
+SKIP_GENERATE_FILE_LISTS = False
 
 def print_msg(msg, isDebug=False):
     if not isDebug:
@@ -14,37 +18,72 @@ def get_classes(classes_file):
     with open(classes_file) as f:
         return [l.strip().lower().replace(" ", "_") for l in f.readlines()]
 
-######## Move annotation files to parent folders ########
+def label_contents(img_filename, classes):
+    # It assumes is already in the img_filename directory and that label file
+    # is on "labels" directory
+    img = cv2.imread(img_filename)
+    height, width, _ = img.shape
+    file_class = "_".join(path.basename(img_filename).split("_")[:-1])
+    class_idx = classes.index(file_class)
+    # OIDv6 Label data
+    label_file = img_filename[:-4] + ".txt"
+    label_lines = [line.strip() for line in open("labels/" + label_file, "r")]
+    new_lines = []
+    for label_line in label_lines:
+        label, x1, y1, x2, y2 = label_line.split()
+        x1, y1, x2, y2 = float(x1), float(y1), float(x2), float(y2)
+        box_width = x2 - x1
+        box_height = y2 - y1
+        center_x = x1 + (box_width / 2.0)
+        center_y = y1 + (box_height / 2.0)
+        relative_cx = center_x / width
+        relative_cy = center_y / height
+        relative_bw = box_width / width
+        relative_bh = box_height / height
+        new_lines.append('{0} {1} {2} {3} {4}'.format(
+            class_idx, relative_cx, relative_cy, relative_bw, relative_bh))
+    return "\n".join(new_lines)
+
 
 chdir(path.join("OIDv6", "multidata"))
 
-for DIR in DIRS:
-    if not path.isdir(DIR):
-        print_msg(f"Directory {DIR} doesn't exists", True)
-        continue
-    subprocess.run(["mv", DIR + "/labels/*", DIR + "/"])
-    print_msg(f"Labels from directory {DIR} moved to parent folder")
+######## Translate Labels to YOLO format  ########
 
-######## Fill up empty validation and test directories ########
+if not SKIP_TRANSLATE_LABELS:
+    classes = get_classes(path.join("..", "..", "classes.txt"))
 
-# Get classes actually downloaded in multidata
+    for DIR in DIRS:
+        chdir(DIR)
+        image_files = []
+        for filename in listdir():
+            image_files.append(filename)
+            labels_file = path.join(getcwd(), filename[:-4] + ".txt")
+            if (    path.isfile(filename)
+                    and filename.endswith(".jpg")
+                    and not path.isfile(labels_file) ):
+                labels_file_contents = label_contents(filename, classes)
+                display_filename = DIR + "/" + path.basename(labels_file)
+                print_msg("Generating Labels File " + display_filename)
+                with open(labels_file, "w") as f:
+                    f.write(labels_file_contents + "\n")
+        class_list_file = path.join("..", DIR + ".txt")
+        with open(class_list_file, "w") as f:
+            for image in image_files:
+                f.write(f"{DIR}/{image}\n")
+        chdir("..")
 
-actual_classes = {
-    'train': [],
-    'validation': [],
-    'test': []}
+print_msg("\n\n================= Label Translation Finished =================\n\n")
 
-for DIR in DIRS:
-    chdir(DIR)
-    file_classes = [
-        "_".join(elem.split("_")[:-1])
-        for elem in os.listdir()
-        if os.path.isfile(elem)]
-    chdir("..")
-    # Eliminate duplicates
-    actual_classes[DIR] = list(dict.fromkeys(file_classes))
+if not SKIP_GENERATE_FILE_LISTS:
+    for DIR in DIRS:
+        chdir(DIR)
+        file_list = path.join("..", DIR + ".txt")
+        with open(file_list, "w") as f:
+            for filename in listdir(getcwd()):
+                if filename.endswith(".jpg"):
+                    f.write(path.join(DIR, filename) + "\n")
+        print_msg(f"File List {DIR}.txt generated")
+        chdir("..")
 
-######## Change Labels inside annotation files to Label Indexes  ########
+print_msg("\n\n================= File Lists Generation Finished =================\n\n")
 
-classes = get_classes(path.join("..", "..", "classes.txt"))
-num_clases = len(classes)
