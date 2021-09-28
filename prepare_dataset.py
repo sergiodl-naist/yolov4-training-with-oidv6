@@ -1,5 +1,5 @@
 from os import chdir, path, listdir, getcwd
-import subprocess
+import shutil
 import cv2
 
 DIRS = ["train", "validation", "test"]
@@ -7,6 +7,7 @@ DEBUG = True
 
 SKIP_TRANSLATE_LABELS = False
 SKIP_GENERATE_FILE_LISTS = False
+SKIP_GENERATE_OBJ_FILE = False
 
 def print_msg(msg, isDebug=False):
     if not isDebug:
@@ -71,8 +72,7 @@ if not SKIP_TRANSLATE_LABELS:
             for image in image_files:
                 f.write(f"{DIR}/{image}\n")
         chdir("..")
-
-print_msg("\n\n================= Label Translation Finished =================\n\n")
+    print_msg("\n\n================= Label Translation Finished =================\n\n")
 
 if not SKIP_GENERATE_FILE_LISTS:
     for DIR in DIRS:
@@ -84,6 +84,18 @@ if not SKIP_GENERATE_FILE_LISTS:
                     f.write(path.join(DIR, filename) + "\n")
         print_msg(f"File List {DIR}.txt generated")
         chdir("..")
+    print_msg("\n\n================= File Lists Generation Finished =================\n\n")
 
-print_msg("\n\n================= File Lists Generation Finished =================\n\n")
+if not SKIP_GENERATE_OBJ_FILE:
+    chdir("..")
+    classes_file = path.join("..", "classes.txt")
+    classes_file = shutil.copy(classes_file, path.join(getcwd(), "classes.txt"))
+    num_classes = sum(1 for line in open(classes_file))
+    with open(path.join(getcwd(), "objects.txt"), "w") as f:
+        f.write(f"classes={num_classes}\n")
+        f.write(f"train=multidata/train.txt\n")
+        f.write(f"valid=multidata/validation.txt\n")
+        f.write(f"names=classes.txt\n")
+        f.write(f"backup=/drive/MyDrive/Training/Backup\n")
+    print_msg("\n\n================= Object File Generation Finished =================\n\n")
 
