@@ -1,5 +1,8 @@
-# oidv6-63classes-yoloformat
+# Darknet's YOLOv4 Training with Custom Dataset with OIDv6 Tool
 
-This repository is intended to include 63 box bounded classes from the Open Image Dataset downloaded by the `oidv6` python tool.
+This repository includes a Jupyter Notebook [YOLOv4\_OIDv6\_Training.ipynb](https://github.com/sergiodl-naist/yolov4-training-with-oidv6/blob/main/YOLOv4_OIDv6_Training.ipynb) as a tutorial for OIDv6 usage to download a custom dataset from Google's Open Images Database project.
 
-Also, it includes several scripts to move the label text files to the common folder; and to translate the labels inside them to a Label Index according to the order inside the same `classes.txt` file used to download the images with `oidv6`.
+With this tutorial you will be able to easily download a dataset, adapt the label annotations to YOLOv4 format, compile Darknet, customize the models to the classes of your dataset, and train the model.
+
+It will give you several tips and notes regarding training and Google's Colab jupyter notebooks.
+
