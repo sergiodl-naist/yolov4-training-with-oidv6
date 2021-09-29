@@ -1,13 +1,23 @@
 from os import path, getcwd
 import json
+import sys
 
-CONFIG_FILE = "yolov4-custom.cfg"
+if len(sys.argv) < 2:
+    print("Missing config file parameter")
+    raise SystemExit
 
+CONFIG_FILE = sys.argv[1]
+if not os.isfile(CONFIG_FILE):
+    print("Config file is not a file")
+    raise SystemExit
+
+CONFIG_FILENAME = path.basename(CONFIG_FILE)
 num_classes = sum(1 for line in open(path.join(getcwd(), "classes.txt")))
 num_pairs_filterclassses = 0
-if CONFIG_FILE == "yolov4-tiny-custom.cfg":
+
+if CONFIG_FILENAME == "yolov4-tiny-custom.cfg":
     num_pairs_filterclassses = 2
-elif CONFIG_FILE == "yolov4-custom.cfg":
+elif CONFIG_FILENAME == "yolov4-custom.cfg":
     num_pairs_filterclassses = 3
 
 # Good to stay within Google Colabs memory limits, change if needed
@@ -79,7 +89,13 @@ for idx_1 in range(len(lines), 0, -1):
             lines[idx] = f"{param}={model_config[param]}"
             params_counter += 1
 
-output_file = "my-" + CONFIG_FILE[:-11] + ".cfg"
+script_directory = path.dirname(__file__)
+new_cfg_filename = "my-" + CONFIG_FILENAME[:-11] + ".cfg"
+output_file = path.join(script_directory, new_cfg_filename)
+
 with open(output_file, "w") as f:
+    print("Writing customized model configuration " + new_cfg_filename)
     f.write("\n".join(lines) + "\n")
+
+print("Customized file written in " + output_file)
 
