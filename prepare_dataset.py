@@ -96,6 +96,6 @@ if not SKIP_GENERATE_OBJ_FILE:
         f.write(f"train=multidata/train.txt\n")
         f.write(f"valid=multidata/validation.txt\n")
         f.write(f"names=classes.txt\n")
-        f.write(f"backup=/drive/MyDrive/Training/Backup\n")
+        f.write(f"backup=./\n")
     print_msg("\n\n================= Object File Generation Finished =================\n\n")
 
