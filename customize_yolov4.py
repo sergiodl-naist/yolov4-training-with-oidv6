@@ -2,17 +2,22 @@ from os import path, getcwd
 import json
 import sys
 
-if len(sys.argv) < 2:
-    print("Missing config file parameter")
+if len(sys.argv) < 3:
+    print("Missing config or classes file parameter")
     raise SystemExit
 
 CONFIG_FILE = sys.argv[1]
-if not os.isfile(CONFIG_FILE):
+if not path.isfile(CONFIG_FILE):
     print("Config file is not a file")
     raise SystemExit
 
+CLASSES_FILE = sys.argv[2]
+if not path.isfile(CLASSES_FILE):
+    print("Classes file is not a file")
+    raise SystemExit
+
 CONFIG_FILENAME = path.basename(CONFIG_FILE)
-num_classes = sum(1 for line in open(path.join(getcwd(), "classes.txt")))
+num_classes = sum(1 for line in open(CLASSES_FILE))
 num_pairs_filterclassses = 0
 
 if CONFIG_FILENAME == "yolov4-tiny-custom.cfg":
