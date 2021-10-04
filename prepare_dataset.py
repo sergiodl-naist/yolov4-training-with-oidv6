@@ -57,11 +57,11 @@ if not SKIP_TRANSLATE_LABELS:
         chdir(DIR)
         image_files = []
         for filename in listdir():
-            image_files.append(filename)
             labels_file = path.join(getcwd(), filename[:-4] + ".txt")
             if (    path.isfile(filename)
                     and filename.endswith(".jpg")
                     and not path.isfile(labels_file) ):
+                image_files.append(filename)
                 labels_file_contents = label_contents(filename, classes)
                 display_filename = DIR + "/" + path.basename(labels_file)
                 print_msg("Generating Labels File " + display_filename)
