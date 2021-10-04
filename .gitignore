@@ -1,3 +1,9 @@
+# Ignore dataset, backup and darknet directories
 OIDv6
+multidata
+Training
+
+# Ignore operational files
 .ipynb_checkpoints
 *.cfg
+*.txt
