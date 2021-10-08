@@ -1,61 +1,7 @@
-Toy
-Beer
-Ball
-Backpack
 Bicycle
-Home appliance
-Boot
-Laptop
-Teapot
-Lantern
-Toaster
-Flashlight
-Scissors
-Printer
-Chair
-Cabinetry
-Suitcase
-Desk
 Computer monitor
 Box
-Wine rack
-Oven
 Door
-Blender
-Vase
-Wardrobe
-Gas stove
-Mechanical fan
-Nightstand
-Ceiling fan
-Kettle
-Food processor
-Bookcase
-Refrigerator
 Filing cabinet
-Table
-Tableware
-Knife
-Bottle
-Frying pan
-Plate
-Mirror
-Kitchen knife
-Chest of drawers
-Cupboard
-Coffee table
 Television
-Coffeemaker
-Wine
-Platter
-Wine glass
 Furniture
-Window
-Closet
-Lamp
-Drawer
-Microwave oven
-Shelf
-Pressure cooker
-Kitchen appliance
-Luggage and bags
