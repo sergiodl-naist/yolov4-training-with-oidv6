@@ -14,7 +14,7 @@ if len(sys.argv) < 2:
     print("Missing classes file as argument")
     raise SystemExit
 
-classes_file = sys.argv[1]
+classes_file = path.realpath(sys.argv[1])
 
 def print_msg(msg, isDebug=False):
     if not isDebug:
