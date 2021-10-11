@@ -101,9 +101,8 @@ for idx_1 in range(len(lines), 0, -1):
             lines[idx] = f"{param}={model_config[param]}"
             params_counter += 1
 
-script_directory = path.dirname(__file__)
 new_cfg_filename = "my-" + CONFIG_FILENAME[:-11] + ".cfg"
-output_file = path.join(script_directory, new_cfg_filename)
+output_file = path.join(path.realpath(getcwd()), new_cfg_filename)
 
 with open(output_file, "w") as f:
     print("Writing customized model configuration " + new_cfg_filename)
