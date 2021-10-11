@@ -16,6 +16,13 @@ if not path.isfile(CLASSES_FILE):
     print("Classes file is not a file")
     raise SystemExit
 
+WIDTH = HEIGHT = 416
+try:
+    WIDTH = sys.argv[3]
+    HEIGHT = sys.argv[4]
+except IndexError:
+    pass
+
 CONFIG_FILENAME = path.basename(CONFIG_FILE)
 num_classes = sum(1 for line in open(CLASSES_FILE))
 num_pairs_filterclassses = 0
@@ -30,8 +37,8 @@ elif CONFIG_FILENAME == "yolov4-custom.cfg":
 #   Example: subdivisions, greater values uses less memory but is slower
 max_batches = num_classes * 2000
 net_config = {
-    'width': {'value': "416", 'read': False},
-    'height': {'value': "416", 'read': False},
+    'width': {'value': WIDTH, 'read': False},
+    'height': {'value': HEIGHT, 'read': False},
     'max_batches': {'value': str(max_batches), 'read': False},
     'steps': {
         'value': '{0}, {1}'.format(
