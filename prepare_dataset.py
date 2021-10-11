@@ -1,6 +1,7 @@
 from os import chdir, path, listdir, getcwd
 import shutil
 import cv2
+import sys
 
 DIRS = ["train", "validation", "test"]
 DEBUG = True
@@ -8,6 +9,12 @@ DEBUG = True
 SKIP_TRANSLATE_LABELS = False
 SKIP_GENERATE_FILE_LISTS = False
 SKIP_GENERATE_OBJ_FILE = False
+
+if len(sys.argv) < 2:
+    print("Missing classes file as argument")
+    raise SystemExit
+
+classes_file = sys.argv[1]
 
 def print_msg(msg, isDebug=False):
     if not isDebug:
@@ -51,7 +58,7 @@ chdir(path.join("OIDv6", "multidata"))
 ######## Translate Labels to YOLO format  ########
 
 if not SKIP_TRANSLATE_LABELS:
-    classes = get_classes(path.join("..", "..", "classes.txt"))
+    classes = get_classes(classes_file)
 
     for DIR in DIRS:
         chdir(DIR)
@@ -88,14 +95,13 @@ if not SKIP_GENERATE_FILE_LISTS:
 
 if not SKIP_GENERATE_OBJ_FILE:
     chdir("..")
-    classes_file = path.join("..", "classes.txt")
     classes_file = shutil.copy(classes_file, path.join(getcwd(), "classes.txt"))
     num_classes = sum(1 for line in open(classes_file))
-    with open(path.join(getcwd(), "objects.txt"), "w") as f:
+    with open(path.join(getcwd(), "obj.data"), "w") as f:
         f.write(f"classes={num_classes}\n")
         f.write(f"train=multidata/train.txt\n")
         f.write(f"valid=multidata/validation.txt\n")
-        f.write(f"names=classes.txt\n")
+        f.write(f"names={classes_file}\n")
         f.write(f"backup=./\n")
     print_msg("\n\n================= Object File Generation Finished =================\n\n")
 
